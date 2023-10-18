@@ -231,4 +231,5 @@ if __name__ == '__main__':
             main(args)
     make_avg_csv(fold, output_folder)
     save_avg_result(fold, output_folder)
+    print(output_folder)
         
