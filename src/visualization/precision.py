@@ -14,10 +14,10 @@ def make_precision_csv(output_folder, phase):
 def save_precision_result(epoch, output, output_folder, phase):
     true = output["class_true"]
     pred = output["class_pred_1hot"]
-    classes = ['mayo0', 'mayo1', 'mayo2', 'mayo3']
+    target_names = ['mayo0', 'mayo1', 'mayo2', 'mayo3']
 
     precision = precision_score(true, pred, average='macro')
-    report = classification_report(true, pred, target_names=classes, output_dict=True)
+    report = classification_report(true, pred, labels=np.arange(len(target_names)), target_names=target_names, output_dict=True)
 
     precision0 = report['mayo0']['precision']
     precision1 = report['mayo1']['precision']

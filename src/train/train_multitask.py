@@ -14,7 +14,7 @@ init_path()
 from utils.pair_dataset import AL_Dataset, RL_Dataset
 from utils.utils import fix_seed, get_date, worker_init_fn, make_optimizer, EarlyStopping
 from utils.multitask_utils import train_multitask, test_multitask
-from utils.model_utils import ranknet_loss, DenseNet169WithTwoOutputs
+from utils.model_utils import ranknet_loss, DenseNet169WithOneOutputs
 from visualization.csv import make_all_csv, save_epoch_result, make_avg_csv, save_avg_result
 from visualization.visualization import visualize_train_results, visualize_test_results
 
@@ -54,8 +54,10 @@ def main(args):
     ])
 
     dataset_path = config['dataset']
-    AL_dataset_path =  f"{dataset_path}/AL{AL_rate}%/5fold-copy"
-    RL_dataset_path =  f"{dataset_path}/AL{AL_rate}%"
+    # AL_dataset_path =  f"{dataset_path}/AL{AL_rate}%/5fold-copy"
+    # RL_dataset_path =  f"{dataset_path}/AL{AL_rate}%"
+    AL_dataset_path =  f"{dataset_path}/AL{AL_rate}%_no_equal/5fold-copy"
+    RL_dataset_path =  f"{dataset_path}/AL{AL_rate}%_no_equal"
 
     train_AL_dataset = AL_Dataset(root=AL_dataset_path + f'/fold{args.fold}/train', transforms=train_transform)
     val_AL_dataset = AL_Dataset(root=AL_dataset_path + f'/fold{args.fold}/val', transforms=train_transform)
@@ -106,9 +108,8 @@ def main(args):
     
 
     # Build net
-    num_classes_task1 = 1
-    num_classes_task2 = 4
-    net = DenseNet169WithTwoOutputs(num_classes_task1, num_classes_task2)
+    num_classes= 4
+    net = DenseNet169WithOneOutputs(num_classes)
     net = nn.DataParallel(net)
     net = net.to(device)
 
@@ -230,16 +231,16 @@ if __name__ == '__main__':
     parser.add_argument('--output_folder', type=str, default=output_folder)
 
     # hold-out
-    # args = parser.parse_args()
-    # main(args)
+    args = parser.parse_args()
+    main(args)
 
     # 5-fold cross validation
-    fold = 5
-    for i in range(1, fold+1):
-            args = parser.parse_args()
-            args.fold = i
-            main(args)
-    make_avg_csv(fold, output_folder)
-    save_avg_result(fold, output_folder)
+    # fold = 5
+    # for i in range(1, fold+1):
+    #         args = parser.parse_args()
+    #         args.fold = i
+    #         main(args)
+    # make_avg_csv(fold, output_folder)
+    # save_avg_result(fold, output_folder)
 
         

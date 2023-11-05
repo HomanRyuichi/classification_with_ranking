@@ -15,10 +15,10 @@ def make_accuracy_csv(output_folder, phase):
 def save_accuracy_result(epoch, output, output_folder, phase):
     true = output["class_true"]
     pred = output["class_pred_1hot"]
-    classes = ['mayo0', 'mayo1', 'mayo2', 'mayo3']
+    target_names = ['mayo0', 'mayo1', 'mayo2', 'mayo3']
 
     accuracy = accuracy_score(true, pred)
-    report = classification_report(true, pred, target_names=classes, output_dict=True)
+    report = classification_report(true, pred, labels=np.arange(len(target_names)), target_names=target_names, output_dict=True)
 
     with open(f'{output_folder}/{phase}/accuracy_{phase}.csv', 'a', newline='') as f:
         writer = csv.writer(f)
