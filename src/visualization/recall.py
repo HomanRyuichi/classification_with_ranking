@@ -13,10 +13,10 @@ def make_recall_csv(output_folder, phase):
 def save_recall_result(epoch, output, output_folder, phase):
     true = output["class_true"]
     pred = output["class_pred_1hot"]
-    target_names = ['mayo0', 'mayo1', 'mayo2', 'mayo3']
+    classes = ['mayo0', 'mayo1', 'mayo2', 'mayo3']
 
     recall = recall_score(true, pred, average='macro')
-    report = classification_report(true, pred, labels=np.arange(len(target_names)), target_names=target_names, output_dict=True)
+    report = classification_report(true, pred, target_names=classes, output_dict=True)
 
     recall0 = report['mayo0']['recall']
     recall1 = report['mayo1']['recall']
