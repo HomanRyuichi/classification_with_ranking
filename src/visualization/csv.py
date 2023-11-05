@@ -10,18 +10,11 @@ from visualization.f1score import make_f1score_csv, save_f1score_result, make_f1
 def make_all_csv(output_folder):
     phases = ["train", "val", "test"]
     for phase in phases:
-        make_result_csv(output_folder, phase)
         make_loss_csv(output_folder, phase)
         make_accuracy_csv(output_folder, phase)
         make_precision_csv(output_folder, phase)
         make_recall_csv(output_folder, phase)
         make_f1score_csv(output_folder, phase)
-
-
-def make_result_csv(output_folder, phase):
-    with open(f'{output_folder}/{phase}/result_{phase}.csv', 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['epoch', 'loss', 'accuracy', 'precision', 'recall', 'f1score'])
 
 
 def save_epoch_result(epoch, output, output_folder, phase):

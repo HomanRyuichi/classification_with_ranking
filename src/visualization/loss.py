@@ -12,11 +12,11 @@ def make_loss_csv(output_folder, phase):
 def save_loss_result(epoch, output, output_folder, phase):
     loss = output["loss"]
     rank_loss = output["rank_loss"]
-    class_loss = output["loss"]
+    class_loss = output["class_loss"]
 
     with open(f'{output_folder}/{phase}/loss_{phase}.csv', 'a', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow([epoch, loss, rank_loss, class_loss])
+        writer.writerow([epoch, loss, class_loss, rank_loss])
 
 
 def make_loss_graph(output_folder):

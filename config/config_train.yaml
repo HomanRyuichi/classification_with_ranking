@@ -1,17 +1,13 @@
 seed: 777
 
-save_folder: expr/RankNet/RL_5000
-
-log_path: RankNet/RL_5000
-
 optimizer:
   name: Adam
   lr: 1.0e-5
 
 train_config:
-  epoch:  2
+  epoch:  100
 
-RL_rate: 70
+AL_rate: 30
 
 dataset: ./dataset/5fold-MultiTask
 

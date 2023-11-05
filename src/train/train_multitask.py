@@ -34,8 +34,8 @@ def main(args):
     os.makedirs(f'{output_folder}/test', exist_ok=True)
     make_all_csv(output_folder)
 
-    RL_rate = config['RL_rate']
-    os.makedirs(f'models/RL{RL_rate}%', exist_ok=True)
+    AL_rate = config['AL_rate']
+    os.makedirs(f'models/AL{AL_rate}%/fold{args.fold}', exist_ok=True)
 
     
     fix_seed(seed=config['seed'])
@@ -54,8 +54,8 @@ def main(args):
     ])
 
     dataset_path = config['dataset']
-    AL_dataset_path =  f"{dataset_path}/RL{RL_rate}%/5fold-copy"
-    RL_dataset_path =  f"{dataset_path}/RL{RL_rate}%"
+    AL_dataset_path =  f"{dataset_path}/AL{AL_rate}%/5fold-copy"
+    RL_dataset_path =  f"{dataset_path}/AL{AL_rate}%"
 
     train_AL_dataset = AL_Dataset(root=AL_dataset_path + f'/fold{args.fold}/train', transforms=train_transform)
     val_AL_dataset = AL_Dataset(root=AL_dataset_path + f'/fold{args.fold}/val', transforms=train_transform)
@@ -104,6 +104,7 @@ def main(args):
                               worker_init_fn=worker_init_fn(seed=config['seed'])
                               )
     
+
     # Build net
     num_classes_task1 = 1
     num_classes_task2 = 4
@@ -111,12 +112,15 @@ def main(args):
     net = nn.DataParallel(net)
     net = net.to(device)
 
+
     # Optimizers
     optimizer = make_optimizer(net.parameters(), **config['optimizer'])
+
 
     # Criterion
     rankloss = ranknet_loss
     CEloss = nn.CrossEntropyLoss()
+
 
     # Training
     best_f1score = 0
@@ -171,9 +175,11 @@ def main(args):
         log += ' ' + f'[val_loss: {val_output["loss"]:.4f}]'
         print(log)
 
+
     # save model
-    best_model_path = f"./models/RL{RL_rate}%/best_model_fold{args.fold}_{epoch}epoch.pt"
-    last_model_path = f"./models/RL{RL_rate}%/last_model_fold{args.fold}_{best_epoch}epoch.pt"
+    model_path = f"./models/AL{AL_rate}%/fold{args.fold}"
+    best_model_path = f"{model_path}/best_model_fold{args.fold}.pt"
+    last_model_path = f"{model_path}/last_model_fold{args.fold}.pt"
     torch.save(best_model.state_dict(), best_model_path)
     torch.save(net.state_dict(), last_model_path)
 
@@ -192,8 +198,10 @@ def main(args):
     visualize_train_results(best_epoch, best_train_output, best_val_output, output_folder)
     visualize_test_results(best_epoch, test_output, output_folder)
 
+
     # save log
     log_path = shutil.copy(args.config_path, output_folder)
+    model_log_path = shutil.copy(args.config_path, model_path)
     date = get_date()
     expr_log = {
         "date": date,
@@ -203,6 +211,8 @@ def main(args):
         "last_model_path": last_model_path
     }
     with open(log_path, 'a')as f:
+        yaml.dump(expr_log, f, default_flow_style=False, allow_unicode=True)
+    with open(model_log_path, 'a')as f:
         yaml.dump(expr_log, f, default_flow_style=False, allow_unicode=True)
 
 
@@ -231,5 +241,5 @@ if __name__ == '__main__':
             main(args)
     make_avg_csv(fold, output_folder)
     save_avg_result(fold, output_folder)
-    print(output_folder)
+
         

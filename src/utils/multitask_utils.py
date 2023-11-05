@@ -69,8 +69,6 @@ def train_multitask(net, AL_loader, RL_loader, optimizer, rank_criterion, class_
         labels = labels.data.cpu().numpy()
         c = c.data.cpu().numpy()
 
-        #動いたあとここをもっと省略して書きたい extend
-        #pathいらん
         for i in range(len(ranks)):
             rank_true.append([pair_mayos[0][i], pair_mayos[1][i]])
             rank_pred.append([s0[i], s1[i]])

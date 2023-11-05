@@ -1,0 +1,30 @@
+seed: 777
+
+
+AL_rate: 30
+
+dataset: ./dataset/5fold-MultiTask
+
+model:
+  name: densenet
+  pretrained: true
+
+AL_data_loader:
+    batch_size: 6
+    shuffle: true
+    drop_last: true
+    num_workers: 2
+    pin_memory: true
+  
+RL_data_loader:
+    batch_size: 7
+    shuffle: true
+    drop_last: true
+    num_workers: 2
+    pin_memory: true
+
+
+early_stop:
+    patience: 20
+    verbose: true
+    mode: loss

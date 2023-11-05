@@ -20,11 +20,6 @@ def save_accuracy_result(epoch, output, output_folder, phase):
     accuracy = accuracy_score(true, pred)
     report = classification_report(true, pred, target_names=classes, output_dict=True)
 
-    # accuracy0 = report['mayo0']['accuracy']
-    # accuracy1 = report['mayo1']['accuracy']
-    # accuracy2 = report['mayo2']['accuracy']
-    # accuracy3 = report['mayo3']['accuracy']
-
     with open(f'{output_folder}/{phase}/accuracy_{phase}.csv', 'a', newline='') as f:
         writer = csv.writer(f)
         writer.writerow([epoch, accuracy])
@@ -62,10 +57,6 @@ def make_accuracy_avg_csv(fold, output_folder):
 def save_accuracy_avg(fold, output_folder):
 
     accuracys = []
-    accuracys_0 = []
-    accuracys_1 = []
-    accuracys_2 = []
-    accuracys_3 = []
 
     for i in range(1, fold+1):
         csv_path = f"{output_folder}/fold{i}/test/accuracy_test.csv"
